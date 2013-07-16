@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8" />
+  <title>Carousel Test</title>
+  <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+  <script src="carousel.js"></script>
+  <style type="text/css">
+    .js-carousel-box { position: relative; overflow: hidden; }
+    .js-carousel-inner { position: absolute; }
+    .js-carousel-inner .item { display: none; position: absolute; }
+    .js-carousel-inner .active { display: block; }
+  </style>
+  <style type="text/css">
+    * { margin: 0; padding: 0; }
+    a { text-decoration: none; color: #333; }
+    a:hover { text-decoration: none; color: #ff0084; }
+    .banner_slide { position: relative; float: left; width: 740px; height: 260px; overflow: hidden; }
+    .slide_list { position: absolute; left: 0; }
+    .slide_list li { float: left; white-space: nowrap; }
+    .banner_slide .prev_next { position: absolute; top: 50%; margin-top: -41px; width: 48px; height: 72px; line-height:72px; font-size: 60px; text-align: center; background: #000; opacity: 0.4; filter: Alpha(opacity=40); cursor: pointer; }
+    .banner_slide .prev_next:hover { color: #fff; opacity: 0.6; filter: Alpha(opacity=60); }
+    .banner_slide .btn_prev { left: 0; }
+    .banner_slide .btn_next { right: 0; }
+    .slide_btn { margin-top: 240px; height: 5px; text-align: center; *position: relative; }
+    .slide_btn a { display: inline-block; *display: inline; *zoom: 1; width: 25px; height: 5px; margin-right: 3px; line-height: 0; font-size: 0; background: #fff; opacity: 0.4; filter: Alpha(opacity=40); }
+    .slide_btn .active { opacity: 0.8; filter: Alpha(opacity=80); }
+  </style>
+
+</head>
+<body id="body-demo-carousel">
+  
+<div class="banner_slide js-carousel-box">
+  <ul class="slide_list js-carousel-inner">
+    <li class="item active"><a href="#"><img width="740" height="260" src="http://i-7.vcimg.com/trim/1efaa65ab949a7e4926b19db666e88e350760/trim.jpg" alt="Trim"></a></li>
+    <li class="item"><a href="#"><img width="740" height="260" src="http://i-7.vcimg.com/trim/cb9e036c6142be0c1b347196cd657eb637864/trim.jpg" alt="Trim"></a></li>
+    <li class="item"><a href="#"><img width="740" height="260" src="http://i-7.vcimg.com/trim/1c6f5b55483ebe9976de89a1bf92c4b980262/trim.jpg" alt="Trim"></a></li>
+    <li class="item"><a href="#"><img width="740" height="260" src="http://i-7.vcimg.com/trim/232b4d1efb6a9e1e93e98eb31372e16464136/trim.jpg" alt="Trim"></a></li>
+  </ul>
+  <a class="prev_next btn_prev js-carousel-control" href="#">&lsaquo;</a>
+  <a class="prev_next btn_next js-carousel-control" href="#">&rsaquo;</a>
+  <div class="slide_btn inline js-carousel-indicators">
+    <a class="item active" href="#"></a>
+    <a class="item" href="#"></a>
+    <a class="item" href="#"></a>
+    <a class="item" href="#"></a>
+  </div>
+</div>
+
+<script>
+  $('.js-carousel-box').carousel();
+</script>
+
+
+</body>
+</html>
+
