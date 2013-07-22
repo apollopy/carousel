@@ -24,26 +24,36 @@
 
 class Carousel
   constructor: (element, options) ->
-    $element = $(element)
     @options = options
+    @_current = 0
+    @_sliding = false
+    @_paused = false
+    @_timer = null
 
+    $element = $(element)
     @rect = $element.width()
     @$inner = $element.find(@options.inner_selector)
     @$items = $element.find(@options.items_selector)
-    @$indicators = $element.find(@options.indicators_selector)
 
-    @_current = 0
-    @_sliding = false
-    @_timer = null
+    if @options.pause
+      $element.on 'mouseenter.py.carousel', =>
+        @pause true
+      .on 'mouseleave.py.carousel', =>
+        @pause false
 
     @start() if @options.auto
+
+    @$indicators = $(@options.indicators_selector).each (i, ele) =>
+      $(ele).on 'click.py.carousel', => @show i
+    $(@options.control_next_selector).on 'click.py.carousel', => @next()
+    $(@options.control_prev_selector).on 'click.py.carousel', => @prev()
 
   # .show( index [, is_prev (default: false) ] )
   show: (index) ->
     is_prev = if arguments[1] is true then true else false
 
     return false if @_sliding
-    return false if index is @_current
+    return false if !index? or index is @_current
 
     @_sliding = true
 
@@ -75,12 +85,16 @@ class Carousel
 
   start: ->
     @stop()
+    @_paused = false
     @_timer = setInterval =>
-      @next()
+      @next() unless @_paused
     , @options.delay
 
   stop: ->
     @_timer = clearInterval @_timer if @_timer
+
+  pause: (paused) ->
+    @_paused = paused
 
 # PLUGIN DEFINITION
 
@@ -89,14 +103,16 @@ $.fn.carousel = (options) ->
     inner_selector : '.js-carousel-inner'
     items_selector : '.js-carousel-inner .item'
     indicators_selector : '.js-carousel-indicators .item'
+    control_next_selector : '.js-carousel-control.btn_next'
+    control_prev_selector : '.js-carousel-control.btn_prev'
     delay : 6000
     duration : 500
     auto : true
+    pause : true
   options =  $.extend defaults, options
 
   @.each ->
     $this = $(this)
-    data = $this.data('py.carousel')
-    unless data
-      $this.data('py.carousel', (data = new Carousel(this, options)))
+    unless $this.data('py.carousel')
+      $this.data('py.carousel', new Carousel(this, options))
 

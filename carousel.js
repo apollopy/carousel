@@ -4,19 +4,38 @@
 
   Carousel = (function() {
     function Carousel(element, options) {
-      var $element;
-      $element = $(element);
+      var $element,
+        _this = this;
       this.options = options;
+      this._current = 0;
+      this._sliding = false;
+      this._paused = false;
+      this._timer = null;
+      $element = $(element);
       this.rect = $element.width();
       this.$inner = $element.find(this.options.inner_selector);
       this.$items = $element.find(this.options.items_selector);
-      this.$indicators = $element.find(this.options.indicators_selector);
-      this._current = 0;
-      this._sliding = false;
-      this._timer = null;
+      if (this.options.pause) {
+        $element.on('mouseenter.py.carousel', function() {
+          return _this.pause(true);
+        }).on('mouseleave.py.carousel', function() {
+          return _this.pause(false);
+        });
+      }
       if (this.options.auto) {
         this.start();
       }
+      this.$indicators = $(this.options.indicators_selector).each(function(i, ele) {
+        return $(ele).on('click.py.carousel', function() {
+          return _this.show(i);
+        });
+      });
+      $(this.options.control_next_selector).on('click.py.carousel', function() {
+        return _this.next();
+      });
+      $(this.options.control_prev_selector).on('click.py.carousel', function() {
+        return _this.prev();
+      });
     }
 
     Carousel.prototype.show = function(index) {
@@ -26,7 +45,7 @@
       if (this._sliding) {
         return false;
       }
-      if (index === this._current) {
+      if ((index == null) || index === this._current) {
         return false;
       }
       this._sliding = true;
@@ -62,8 +81,11 @@
     Carousel.prototype.start = function() {
       var _this = this;
       this.stop();
+      this._paused = false;
       return this._timer = setInterval(function() {
-        return _this.next();
+        if (!_this._paused) {
+          return _this.next();
+        }
       }, this.options.delay);
     };
 
@@ -71,6 +93,10 @@
       if (this._timer) {
         return this._timer = clearInterval(this._timer);
       }
+    };
+
+    Carousel.prototype.pause = function(paused) {
+      return this._paused = paused;
     };
 
     return Carousel;
@@ -83,17 +109,19 @@
       inner_selector: '.js-carousel-inner',
       items_selector: '.js-carousel-inner .item',
       indicators_selector: '.js-carousel-indicators .item',
+      control_next_selector: '.js-carousel-control.btn_next',
+      control_prev_selector: '.js-carousel-control.btn_prev',
       delay: 6000,
       duration: 500,
-      auto: true
+      auto: true,
+      pause: true
     };
     options = $.extend(defaults, options);
     return this.each(function() {
-      var $this, data;
+      var $this;
       $this = $(this);
-      data = $this.data('py.carousel');
-      if (!data) {
-        return $this.data('py.carousel', (data = new Carousel(this, options)));
+      if (!$this.data('py.carousel')) {
+        return $this.data('py.carousel', new Carousel(this, options));
       }
     });
   };
